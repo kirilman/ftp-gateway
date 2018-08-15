@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Employees xmlns="https://www.journaldev.com/employees">
+  <Employee id="1">
+    <age>25</age>
+    <name>Pankaj</name>
+    <gender>Male</gender>
+    <role>Java Developer</role>
+  </Employee>
+  <Employee id="2">
+    <age>34</age>
+    <name>Mona</name>
+    <gender>Female</gender>
+    <role>Manager</role>
+  </Employee>
+  <Employee id="3">
+    <age>45</age>
+    <name>Dave</name>
+    <gender>Male</gender>
+    <role>Support</role>
+  </Employee>
+</Employees>

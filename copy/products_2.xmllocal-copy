@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<catalog>
+	<product id = "21">
+		<name>Ahmad Tea</name>
+		<amount>12</amount>
+		<price>79.90</price>
+	</product>
+	<product id = "22">
+		<name>Jacobs millicano</name>
+		<amount>234</amount>
+		<price>323.21</price>
+	</product>
+	<product id = "33">
+		<name>Nescafe Gold</name>
+		<amount>42</amount>
+		<price>33</price>	
+	</product>	
+</catalog>
+

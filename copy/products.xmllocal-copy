@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<catalog>
+	<product id = "1">
+		<name>Молоко Деревенское</name>
+		<amount>50</amount>
+		<price>1000</price>
+	</product>
+	<product id = "2">
+		<name>Пиво балтика 3</name>
+		<amount>50.24</amount>
+		<price>1000</price>
+	</product>
+	<product id = "3">
+		<name>Масло подсолнечное</name>
+		<amount>100.30</amount>
+		<price>33</price>	
+	</product>	
+</catalog>
+

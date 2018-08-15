@@ -1,0 +1,20 @@
+p{
+    clear: both;
+    text-align: right;
+    line-height: 15px;
+}
+label{
+    float: left;
+}
+.main{
+    width: 1000px; 
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14pt;
+    margin: 0 auto;
+}
+.elements{
+    float: left;
+}
+
+

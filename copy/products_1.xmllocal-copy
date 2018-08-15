@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<catalog>
+	<product id = "11">
+		<name>Вода минеральная</name>
+		<amount>12</amount>
+		<price>39.90</price>
+	</product>
+	<product id = "12">
+		<name>Pepsi</name>
+		<amount>234</amount>
+		<price>123.21</price>
+	</product>
+	<product id = "13">
+		<name>Coca Cola</name>
+		<amount>42</amount>
+		<price>33</price>	
+	</product>	
+</catalog>
+
