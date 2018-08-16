@@ -28,30 +28,30 @@ connection.query('INSERT INTO Product VALUES ('+id+',"Балтика 8", 13.14, 
 
 
 
-function InsertDB(connect, item){
-    console.log(item);
-    var query = 'INSERT INTO Product VALUES ('+item.id+',"'+item.name+'",'+item.amount+','+item.price+')';
-    console.log(query);
-    connect.query(query);
-}
+// function InsertDB(connect, item){
+//     console.log(item);
+//     var query = 'INSERT INTO Product VALUES ('+item.id+',"'+item.name+'",'+item.amount+','+item.price+')';
+//     console.log(query);
+//     connect.query(query);
+// }
 
-function testexport(){
-    console.log('Работает модуль test export')
-}
-var x = 100
-module.exports = InsertDB;
-module.exports.func = testexport();
-module.exports = x;
+// function testexport(){
+//     console.log('Работает модуль test export')
+// }
+// var x = 100
+// module.exports = InsertDB;
+// module.exports.func = testexport();
+// module.exports = x;
 
 
-product = {
-    id: 21321,
-    name: "Помидор краснодарский",
-    amount: 200,
-    price: 100
-}
-console.log(product)
+// product = {
+//     id: 21321,
+//     name: "Помидор краснодарский",
+//     amount: 200,
+//     price: 100
+// }
+// console.log(product)
 
-InsertDB(connection, product )
+// InsertDB(connection, product )
 
 connection.end();

@@ -26,7 +26,7 @@
                 </p>
                 <p>
                     <label>user name </label>
-                    <input type="text"  size="30" id='username'/>
+                    <input type="text"  size="30" id='user'/>
                 </p>
                 <p>
                     <label>user password</label>
@@ -36,68 +36,35 @@
                         <input value="Сохранить" name="buttonSave" type="button" id = "buttonSave"/>
                 </p>
             </div>
+            <p class="update">
+                <input value="Обновить базу" name="buttonUpdate" type="button" id = "buttonUpdate"/>
+
+            </p>
               <script>
-                //   function CreateRequest(){
-                //     var Request = false;
-                    
-                //     if (window.XMLHttpRequest)
-                //     {
-                //     //Gecko-совместимые браузеры, Safari, Konqueror
-                //     Request = new XMLHttpRequest();
-                //     }
-                //     else if (window.ActiveXObject)
-                //     {
-                //     //Internet explorer
-                //     try
-                //     {
-                //     Request = new ActiveXObject("Microsoft.XMLHTTP");
-                //     } 
-                //     catch (CatchException)
-                //     {
-                //     Request = new ActiveXObject("Msxml2.XMLHTTP");
-                //     }
-                //     }
-                    
-                //     if (!Request)
-                //     {
-                //     alert("Невозможно создать XMLHttpRequest");
-                //     }
-                    
-                //     return Request;
-                //     }
-                //   var Request = CreateRequest();
-                // var request = new XMLHttpRequest();
-                // request.open('GET','http://localhost:3000/',true);
-                // request.addEventListener('readystatechange', function() {
-                // // если состояния запроса 4 и статус запроса 200 (OK)
-                // if ((request.readyState==4) && (request.status==200)) {
-                //     // например, выведем объект XHR в консоль браузера
-                //     console.log(request);
-                //     // и ответ (текст), пришедший с сервера в окне alert
-                //     console.log(request.responseText);
-                //     // получить элемент c id = welcome
-                //     var userpassword = document.getElementById("userpassword");
-                //     // заменить содержимое элемента ответом, пришедшим с сервера
-                //     userpassword.value = request.responseText.config;
-                // }
-                // }); 
-                // 5. Отправка запроса на сервер
-                // request.send();
-              
                 $.getJSON('http://localhost:3000/config', data =>{
                     console.log(data);
                     var host = document.getElementById('host').value = data.config.ftpconfig.host;
                     var port = document.getElementById('port').value = data.config.ftpconfig.port;
-                    var username = document.getElementById('username').value = data.config.ftpconfig.user;
+                    var user = document.getElementById('user').value = data.config.ftpconfig.user;
                     var password = document.getElementById("password").value = data.config.ftpconfig.password;                
                 })
 
                 $('#buttonSave').bind('click', function(){
-                                console.log('Нажата');
-                                data = {host:document.getElementById('host').value};
-                                console.log(data);
-                                $.post('http://localhost:3000/saveConfig', data);
-                            })
+                    console.log('Нажата');
+                    data = {
+                            host:       document.getElementById('host').value,
+                            port:       document.getElementById('port').value,
+                            user:       document.getElementById('user').value,
+                            password:   document.getElementById('password').value
+                        };
+                    console.log(data);
+                    $.post('http://localhost:3000/saveConfig', data);
+                })
+                $('#buttonUpdate').bind('click', function(){
+                    console.log('Save нажата')
+
+                    $.post('http://localhost:3000/update');
+                })
               </script>
         </div>
     </body>

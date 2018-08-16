@@ -1,30 +1,55 @@
+var Client = require('ftp');
 var fs = require('fs')
-// stream = fs.createWriteStream('file')
-// var a = ' test'
-// stream.write('hello world'+ a)
-// for(i=0; i<50; i++){
-//     console.log(i.toString());
+var evt = require('events');
 
-//     stream.write(i.toString()+'\n');
-// }
-// stream.on('finish',function(){
-//     console.log('finish');
-// });
-var fileName = 'products.xml'
+var emt = new evt.EventEmitter();
+var c = new Client();
 
-//var path = "./XML copy/"+"local_" + fileName;
-var path = "XML copy/local_products.xml";
-// var path = "/home/kirilman/Projects/JS/Learn JS/test ftp/XML copy/local_products.xml";
-
-// var path = "products.xml"
-var data = fs.readFileSync( path, "utf8");
-
-console.log(data);
-
-// var data = fs.readFileSync( fileName, "utf8");
-// console.log(data);
-
-fs.readFile(path,"utf8",function(err,data){
+var ftpconfig = { 
+    host: '127.0.0.1',
+    user: 'kirilman',
+    password: '606613',
+};
+c.status((err,status)=>{
     if (err) throw err;
-    console.log(data)
-})
+    console.log('status',status);
+});
+
+// c.connect(ftpconfig);
+
+
+// c.on('ready', function() {
+//   c.get('foo.txt', function(err, stream) {
+//     if (err) throw err;
+//     stream.once('close', function() { c.end(); });
+//     stream.pipe(fs.createWriteStream('foo1.local-copy.txt'));
+//   });
+// });
+// c.on('ready', function() {
+//     c.get('foo1.txt', function(err, stream) {
+//       if (err) throw err;
+//     //   stream.once('close', function() { c.end(); });
+//       stream.pipe(fs.createWriteStream('foo11.local-copy.txt'));
+//     });
+//   });
+// // connect to localhost:21 as anonymous
+// c.on('ready', function(){
+//     c.status((err,status)=>{
+//         if (err) throw err;
+//         console.log('status',status);
+//     });
+// })
+// c.on('end',()=>{
+//     console.log('Соединение с ftp успешно закрыто')
+//     c.status((err,status)=>{
+//         if (err) throw err;
+//         console.log('status',status);
+//     });
+// })
+// // dbclient.connection.end();
+//         c.status((err,status)=>{
+//             if (err) throw err;
+//             console.log('status',status);
+//         });
+
+// c.end()

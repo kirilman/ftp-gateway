@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
   });
 
 dbClient.prototype = new evt.EventEmitter;
-
+emt = new evt.EventEmitter;
 function dbClient(){
     console.log('Db constuct start');
     this.connection = mysql.createConnection({
@@ -36,24 +36,73 @@ dbClient.prototype.insertProduct = function insertProduct( product){
 dbClient.prototype.updateProduct = function updateProduct ( product ){
     var sql = 'UPDATE Product SET name = "'+ product.name +'", price = '+product.price+
     ', amount =' + product.amount +' WHERE id='+ product.id;
+    
+    // emt.on('queryCount',function(result,con){
+    //     if (result[0].count!=0){
+    //         sql = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
+
+    //         con.query(sql,function(err,result,fields){
+    //             if (err) throw err
+    //             });
+    //     }else{
+    //         sql = 'INSERT INTO Product VALUES ('+product.id+',"'+product.name+'",'+
+    //                         product.price+','+product.amount+')';
+    //         con.query(sql);
+    //     }
+        
+    // })
 
     sql = "SELECT Count(id) as count FROM Product WHERE id = "+ product.id;
+    this.connection.query(sql,function(err,result,fields){
+        if (err) throw err;
+        emt.emit('queryCount',result,connection);
+        }).on('result',function(result){
+            if (result[0].count!=0){
+            sql = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
+    
+                con.query(sql,function(err,result,fields){
+                    if (err) throw err
+                    });
+            }else{
+                sql = 'INSERT INTO Product VALUES ('+product.id+',"'+product.name+'",'+
+                                product.price+','+product.amount+')';
+                con.query(sql);
+            }
+        });
 
+    
+    
+    // if (result[0].count!=0){
+    //     sql = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
+
+    //     this.connection.query(sql,function(err,result,fields){
+    //         if (err) throw err
+    //         });
+    // }else{
+    //     sql = 'INSERT INTO Product VALUES ('+product.id+',"'+product.name+'",'+
+    //                        product.price+','+product.amount+')';
+    //         this.connection.query(sql);
+    // }
     // query = "SELECT * FROM Product WHERE amount < 13";
 
-    this.connection.query(sql, function(err,result,fields){
-        if (err) throw err;
-        if (result[0].count!=0){
-            sql = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
-            connection.query(sql);
-        }
-        else{
-            var sql = 'INSERT INTO Product VALUES ('+product.id+',"'+product.name+'",'+
-                       product.price+','+product.amount+')';
-            connection.query(sql);
 
-        }
-    })
+    // console.log(sql)
+
+    // this.connection.query(sql, function(err,result,fields){
+    //     if (err) throw err;
+    //     if (result[0].count!=0){
+    //         sql = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
+    //         this.connection.query(sql);
+    //         // this.connection
+    //         // this.connection
+    //     }
+    //     else{
+    //         var sql = 'INSERT INTO Product VALUES ('+product.id+',"'+product.name+'",'+
+    //                    product.price+','+product.amount+')';
+    //         connection.query(sql);
+
+    //     }
+    // })
 
     // query = 'UPDATE Product SET amount =' + product.amount +' WHERE id='+ product.id;
     // // console.log(query);

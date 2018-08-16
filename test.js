@@ -141,3 +141,52 @@ function readConfig(){
 
 config = readConfig();
 config.host = 1;
+
+var Client = require('ftp');
+var fs = require('fs')
+var evt = require('events');
+
+var emt = new evt.EventEmitter();
+var c = new Client();
+
+var ftpconfig = { 
+    host: '127.0.0.1',
+    user: 'kirilman',
+    password: '606613',
+};
+
+c.connect(ftpconfig);
+// c.on('ready',function(){
+//         c.pwd(function(err,path) {
+//             if (err) throw err;
+//             console.log("Current dir:",path);
+//             emt.emit('cwdComplete')
+//         });
+//     });
+
+// c.end()
+
+// var Client = require('ftp');
+// var fs = require('fs');
+
+c.on('ready', function() {
+  c.get('foo.txt', function(err, stream) {
+    if (err) throw err;
+    stream.once('close', function() { c.end(); });
+    stream.pipe(fs.createWriteStream('foo1.local-copy.txt'));
+  });
+});
+c.on('ready', function() {
+    c.get('foo1.txt', function(err, stream) {
+      if (err) throw err;
+      stream.once('close', function() { c.end(); });
+      stream.pipe(fs.createWriteStream('foo11.local-copy.txt'));
+    });
+  });
+// connect to localhost:21 as anonymous
+
+c.on('end',()=>{
+    console.log('Соединение с ftp успешно закрыто')
+})
+dbclient = require('./dbclient');
+// dbclient.connection.end();

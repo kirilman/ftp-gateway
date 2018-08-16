@@ -26,40 +26,23 @@ function readConfig(){
 
 
 function run(){
-
+    var fileCount;
+    var closeCount=0;
     config = readConfig();
-
     var ftpconfig = { 
                     host: config.ftpconfig.host,
                     user: config.ftpconfig.user,
                     password: config.ftpconfig.password
     };
-
     c.connect(ftpconfig);
-
     //xml
+    
+    c.status((err,status)=>{
+        if (err) throw err;
+        console.log('status',status);
+    });
+
     var parseString = require('xml2js').parseString;
-
-    // let promise = new Promise( (resolve, reject ) => {
-    //     c.on('ready',function(){
-    //         c.cwd('ftp/',function(err,currentDir){
-    //             if (err) throw err;
-    //             c.pwd(function(err,path) {
-    //                 if (err) throw err;
-    //                 console.log("Current dir:",path);
-    //             });
-    //             console.log('Блок сwdre');
-    //             // resolve('are');
-    //         });
-    //     });
-    // }).then( a => {
-    //     console.log('re');
-    //     }
-    // )
-    // // .catch(error => {
-    // //     console.log('re'); // Error: Not Found
-    // //   });
-
     //Копирование файла на локальный диск
     emt.on('cwdComplete', function(){
         c.list(function(err, list){
@@ -67,13 +50,21 @@ function run(){
             c.pwd(function(err,path) {
                 if (err) throw err;
                 console.log("Current path:",path);
-                list.forEach(function(item){
+                fileCount = list.length;
+                list.forEach(function(item,index){
                     c.get(item.name, function(err, stream) {
                         if (err) throw err;
-                        stream.once('close', function() { c.end(); emt.emit('FileComplite', item.name);});
+                        stream.once('close', function() { 
+                                // c.end(); 
+                                closeCount++;
+                                emt.emit('FileComplite', item.name);
+                                console.log('FileComplite',item.name)
+                            });
                         stream.pipe(fs.createWriteStream('./XML copy/' + 'local_'+item.name));
                         // circle();
                     });
+                    console.log('index',index);
+
                     
                 });
             });
@@ -97,10 +88,12 @@ function run(){
                 parseString(data, function(err, result){
                     if (err) throw err;
                     var products = [];
-                    console.log('Paring file')
+                    console.log('Parsing file')
                     // console.log(result);
                     try{
                         products = result.catalog.product;      //? 
+                        console.log('ObjectComplite',fileName)
+
                         emt.emit('ObjectComplite',products, fileName);
                     }
                     catch(error){
@@ -117,29 +110,50 @@ function run(){
     emt.on('ObjectComplite', function(products, fileName){
         //console.log('prod',products);
         var p = products[0];
-        products.forEach(function(item){
+        console.log(fileName);
+        console.log(p);
+        
+        products.forEach(function(item,i){
             product = {
                 id: item.id,
                 name: item.name,
                 amount: item.amount,
                 price: item.price,
             }
+            // console.log('Product for update',product)
             // dbclient.insertProduct(product);
-
-            dbclient.updateProduct(product);
-        });
+             dbclient.updateProduct(product);
+             if (i==products.length - 1){
+                 console.log(i, products.length)
+                 emt.emit('updateDBComplite')
+             }
+        ;});
+        
         //Удаление файла с FTP
         //c.delete(fileName, err => {if(err) throw err})
+        emt.on('updateDBComplite',function(){
+            fileCount--;
+            
+            console.log('After circle',fileCount);
+            if (fileCount==0){
+                dbclient.connection.end();
+                c.end();
+                console.log('fileCount',fileCount);
+                console.log('closeCount',closeCount);
+                //Удаление локальных файлов
+                fs.readdir('./XML copy',(err,files)=>{
+                    files.forEach( file => {
+                        if (file.indexOf('.xml')>0){
+                            fs.unlink('./XML copy/'+file,err=> {if (err) throw err})
+                        }
+                    })
+                })
+               
+            }
+            console.log('a',fileCount);
+        })
 
     });
-
-        // fs.readFile('XML copy/local_products_1.xml','utf-8',function(err,data){
-        //     if (err) throw error;
-        //     parseString(data, function(err, result){
-        //         console.dir(result.catalog);
-        //     });
-        // });
-
 
     //Переход в папку ftp
     c.on('ready',function(){
@@ -153,15 +167,7 @@ function run(){
         });
     });
 };
-
+c.on('close',()=>{
+    console.log('Соединение с ftp успешно закрыто')
+})
 module.exports.updateProduct = run;
-
-
-// fs.readFile(list[0],'utf-8',function(err,data){
-//     if (err) throw err;
-//     parseString(data, function(err, result){
-//     if (err) throw err;
-//     console.dir(JSON.stringify(result));
-//     console.dir(result);
-//     });
-// });
