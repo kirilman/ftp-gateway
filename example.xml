@@ -1,0 +1,20 @@
+<catalog>
+	<product>
+		<id>10</id>
+		<store_id>1</store_id>
+		<amount>333</amount>
+		<price>42.1</price>
+	</product>
+	<product>
+		<id>50</id>
+		<store_id>2</store_id>
+		<amount>500</amount>
+		<price>12.1</price>
+	</product>
+	<product>
+		<id>60</id>
+		<store_id>2</store_id>
+		<amount>122</amount>
+		<price>15.21</price>
+	</product>
+</catalog>
