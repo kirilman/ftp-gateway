@@ -5,7 +5,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="Описание страницы. Не менее 160 символов. " />
     <meta name="keywords" content="Здесь указываем список ключевых слов, разделенные запятой." />
-    <link rel="stylesheet" href="configform.css">
+    <link rel="stylesheet" href="/public/configform.css">
     <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous">
         </script>
@@ -35,7 +35,13 @@
                 </p>
                 <p>
                     <label>Период автообновления</label>
-                    <input type="text" size="30" id="period" />
+                    <!-- <input type="text" size="30" id="period" /> -->
+                    <input type="text" size="7" id="period"/>
+                    <SELECT name="selectUnitTime" id="selectUnitTime">
+                        <OPTION VALUE="0">Единица времени</OPTION>
+                        <OPTION VALUE="2">мин</OPTION>
+                        <OPTION Selected VALUE="3">ч</OPTION>
+                    </SELECT>
                 </p>
                 <p>
                     <input value="Сохранить настройки" name="buttonSave" type="button" id="buttonSave" />
@@ -50,53 +56,134 @@
                     <input type="text" size="30" id ='serviceStatus' />
                 </p>
                 <p>
-                    <label>История событий</label>                
+                    <label>Информационный лог обновления остатков</label>                
                 </p>
                 <p>
-                <textarea name='log' cols = "80" rows="12" id='log'></textarea>
+                <textarea name='log' cols = "80" rows="20" id='log'></textarea>
                 </p>
+
+                <p>
+                    <input value="Экспорт БД" name="Export" type="button" id="buttonExport" />
+                </p>
+                
+                    
+                <!-- <SELECT name="numbers[]" id="numbers" multiple size="3" style="width:250px;"></SELECT> -->
+                <p>
+                    <label>Информационный лог добавления заказов</label>                
+                </p>
+                <p>
+                <textarea name='logRequest' cols = "80" rows="20" id='logRequest'></textarea>
+                </p>
+
             </div>
+            
             <script>
-                $.getJSON('http://localhost:3000/config', data => {
+
+
+                
+                // function Add_option_to_select(){
+                //     var second = new Array (12, 15, 20, 30, 45);
+                //     var minute = new Array (1, 2, 5, 15, 30);
+                //     var hour   = new Array (1, 2, 3, 5, 6);
+
+                //     var listNumbers = document.getElementById('numbers');
+                //     var listUnitTime = document.getElementById('selectUnitTime');
+
+                //     var selind = listUnitTime.options.selectedIndex;
+
+                //     switch (selind){
+                //         case 1:
+                //             listNumbers.options.length = 0;
+                //             var len = second.length;
+                //             for (var i = 0; i < len; n++){
+                //                 listNumbers[i] = new Option( second[i],i);
+                //             }
+                //     }
+                // }
+                //var serverAddress = 'http://localhost:3000'
+                 var serverAddress = 'http://185.144.30.230:3000'
+                updateLog(true);
+                document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
+
+                $('#buttonExport').click(function(e) {
+                    function downloadURI(uri, name) {
+                        var link = document.createElement("a");
+                        link.download = name;
+                        link.href = uri;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        delete link;
+                    }
+                    // /downloadURI(serverAddress + '/public/products.xml','1.xml');
+                    $.getJSON(serverAddress+'/exportDb', ans => {
+                        console.log(ans);
+                        console.log(ans.commet)
+                        if (ans.status == "OK"){
+                            // downloadURI(serverAddress + '/public/db_export.csv','db_export.csv');
+                            $('#log').val($.trim($('#log').val() + '\n' + 'Выполнен экспорт БД на FTP.'+ "\n"));
+                            document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
+                        }else{
+                            prompt('Неудалось экспортировать БД.',JSON.stringify(ans.commet));
+                            // $('#log').val($.trim($('#log').val() + '\n' + 'Неудалось экспортировать БД.' + JSON.stringify(ans.commet) + "\n"));
+                            document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
+                        }
+                    })
+
+                }); 
+
+                $.getJSON(serverAddress+'/config', data => {
                     console.log(data);
                     var host = document.getElementById('host').value = data.config.host;
                     var port = document.getElementById('port').value = data.config.port;
                     var user = document.getElementById('user').value = data.config.user;
                     var password = document.getElementById("password").value = data.config.password;
                     var period = document.getElementById("period").value = data.config.period;
+                    var unitTime = document.getElementById('selectUnitTime').options.selectedIndex = data.config.unitTime;
+
                 })
 
                 $('#buttonSave').bind('click', function () {
                     console.log('Нажата');
+                    var index = document.getElementById("selectUnitTime").options.selectedIndex;
                     data = {
                         host: document.getElementById('host').value,
                         port: document.getElementById('port').value,
                         user: document.getElementById('user').value,
                         password: document.getElementById('password').value,
-                        period: document.getElementById('period').value
+                        period: document.getElementById('period').value,
+                        unitTime: document.getElementById('selectUnitTime').options[index].value,   
+
                     };
                     console.log(data);
-                    $.post('http://localhost:3000/saveConfig', data);
+                    if (index == 0){
+
+                    }
+
+                    $.post(serverAddress+'/saveConfig', data);
                 })
 
                 $('#buttonUpdate').bind('click', function () {
                     console.log('Save нажата')
                     
-                    $.post('http://localhost:3000/update');
-                    window.location.reload();
+                    $.post(serverAddress+'/update');
+                //     window.location.reload();
                 })
 
                 $('#buttonAutoUpdate').bind('click', function () {
-                    $.post('http://localhost:3000/autoUpdate');
-                    window.location.reload();
+                    $.post(serverAddress+'/autoUpdate');
+                     window.location.reload();
+                    $('#buttonAutoUpdate').prop('disabled',true);
+
                 })
 
                 $('#buttonStop').bind('click', function () {
-                    $.post('http://localhost:3000/stop');
+                    $.post(serverAddress+'/stop');
+                    $('#buttonAutoUpdate').prop('disabled',false);
                     window.location.reload();
                 })
 
-                $.getJSON('http://localhost:3000/getStatus', data => {
+                $.getJSON(serverAddress+'/getStatus', data => {
                     console.log(data)
                     var serviceStatus = document.getElementById("serviceStatus").value = data.serviceStatus;
                 })
@@ -114,19 +201,37 @@
                         elem.focus ();
                     }
                 }
-                document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
-                $.getJSON('http://localhost:3000/getLogfile', data => {
+                
+                
+                var setIntervalId = setInterval(updateLog,2000);
+                function updateLog(scroll = false){
+                    $.getJSON(serverAddress+'/getLogfile', data => {
+                        
+                        var str ='';
+                        for (i in data.array){ 
+                            str = str + data.array[i] + '\n';
+                        }
+                        var log = document.getElementById('log').value = str;
+                        if (scroll){
+                            document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
+                        }
+
+                    })
+
+                    $.getJSON(serverAddress+'/getLogfileRequest', data => {
                     
                     var str ='';
                     for (i in data.array){ 
                         str = str + data.array[i] + '\n';
                     }
-                    var log = document.getElementById('log').value = str;
+                    var log = document.getElementById('logRequest').value = str;
                     
-                    document.getElementById("log").scrollTop=document.getElementById("log").scrollHeight;
+                    document.getElementById("logRequest").scrollTop=document.getElementById("logRequest").scrollHeight;
 
                 })
+                }
 
+                document.getElementById('logRequest').scrollTop =document.getElementById("logRequest").scrollHeight;
             
             </script>
         </div>

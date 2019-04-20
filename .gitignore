@@ -2,6 +2,7 @@
 /OrdersStatus
 /copy
 /root 
+/public
 log_file.txt 
 log_file_request.txt 
 server-error.log 
@@ -12,3 +13,5 @@ example.xml
 products.xml 
 /Product file 
 file_console.txt
+Список статусов заказа.ods
+
