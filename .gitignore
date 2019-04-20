@@ -1,0 +1,14 @@
+/Orders 
+/OrdersStatus
+/copy
+/root 
+log_file.txt 
+log_file_request.txt 
+server-error.log 
+server-out.log 
+config.json 
+example order .json 
+example.xml 
+products.xml 
+/Product file 
+file_console.txt
